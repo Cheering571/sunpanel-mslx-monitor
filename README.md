@@ -1,0 +1,214 @@
+# MSLX Monitor — Sun-Panel 微应用
+
+在 [Sun-Panel](https://sun-panel.top) 的导航页上直接监控和管理 **MSLX 面板**里的 Minecraft 服务器。
+
+不用切页面、不用记 IP，卡片上就能看到在线人数、运行时长、内存占用，点一下就启停。
+
+<p align="center">
+  <i>7 种卡片尺寸 · 5 套主题皮肤 · 每张卡片可独立绑定不同服务器</i>
+</p>
+
+---
+
+## 功能
+
+### 监控
+
+- **实时状态**：运行中 / 未启动 / 启动中 / 停止中，状态点颜色跟随
+- **在线人数 / 运行时长 / 内存占用** 三项核心指标
+- **连接地址**：自动显示实例的 `IP:端口`
+- **异常停止告警**：从「运行中」掉线会标红提示 ⚠ 异常停止
+- **自动刷新**：30 秒轮询，可手动刷新
+
+### 操作
+
+- 卡片内直接 **启动 / 停止 / 重启 / 备份**
+- 操作带二次确认，防误触
+- 多实例列表视图，一屏看完所有服务器
+
+### 玩家管理
+
+独立页面，四个标签页：
+
+| 标签 | 能力 |
+|---|---|
+| 玩家历史 | 最近登录记录、UUID、登录次数 |
+| OP | 添加 / 移除管理员 |
+| 白名单 | 添加 / 移除白名单 |
+| 封禁 | 玩家封禁 / IP 封禁 |
+
+### 多卡片独立绑定
+
+每张卡片各自记住要监控哪台服务器 —— 可以同时放三张 2×2 卡片分别盯「生存」「创造」「测试服」，互不干扰。
+
+**切换方式**：点卡片上的服务器名（带 ▾）→ 弹出选择面板 → 选中即生效。
+
+### 自适应排版
+
+卡片尺寸从 1×1 到 4×4 共 7 种，字号、间距、布局全部按实际渲染尺寸推算：
+
+- 宽卡（如 2×1）横向排布，字体放大
+- 高卡（如 1×2）纵向排布，按钮竖排
+- 地址行按内容长度自动缩放字号，**永不截断**
+
+---
+
+## 主题皮肤
+
+五套皮肤，全部跟随 Sun-Panel 的深色 / 浅色模式，且内页（主页面、玩家页、配置页）一并换肤。
+
+| 皮肤 | 风格 |
+|---|---|
+| **默认** | 完全跟随 Sun-Panel 的原生样式 |
+| **我的世界 · 石头** | 16×16 像素石头纹理，2px 黑边 + 内嵌高光的原版 GUI 按钮 |
+| **我的世界 · 草方块** | 草皮 + 泥土的像素纹理，配色取自官方贴图取样 |
+| **拟态（Neumorphism）** | 同色系双向阴影，凸起 / 凹陷，柔和无边框 |
+| **液态玻璃** | 半透明 + 背景模糊，能透出导航页壁纸 |
+
+### 字体
+
+三档可选，与皮肤独立组合：
+
+| 字体 | 说明 |
+|---|---|
+| 跟随后台 | 使用 Sun-Panel 自带字体 |
+| Mojangles | Minecraft 原版字体（仅 ASCII，中文回退 Unifont） |
+| Unifont | GNU 像素等宽字体，中英文统一 |
+
+> 字体文件不随仓库分发，处理方式见 [安装文档](docs/02-install.md#字体)。
+
+### 实时切换
+
+在配置页切换皮肤，**已渲染的卡片会立刻变样**，不需要刷新页面。
+
+实现方式见 [皮肤系统文档](docs/04-skins.md#实时切换)。
+
+---
+
+## 快速开始
+
+### 方式一：直接用打包好的 zip
+
+1. 从 Releases 下载最新的 `cheering-mslx-monitor-x.y.z.zip`
+2. 打开 Sun-Panel → 设置 → 微应用 → 上传离线包
+3. 在导航页添加「MSLX 监控」卡片
+4. 点卡片右上角 ⚙ 填写 MSLX 地址和账号密码
+5. 保存
+
+> 安装或升级后如果样式没变，**请关闭标签页重新打开**，按 F5 不够 —— 微应用的 `main.js` 会被浏览器缓存。
+
+### 方式二：自己构建
+
+```bash
+git clone https://github.com/<your-name>/sunpanel-mslx-monitor.git
+cd sunpanel-mslx-monitor
+npm install
+npm run pack
+```
+
+产物在 `packages/cheering-mslx-monitor-<version>.zip`。
+
+详细步骤见 [安装文档](docs/02-install.md)。
+
+---
+
+## 环境要求
+
+| 项目 | 版本 |
+|---|---|
+| Sun-Panel | v2.0.0 及以上（需要微应用功能） |
+| MSLX | v1.7.x 测试通过 |
+| Node.js（仅开发） | >= 18.20 |
+
+---
+
+## 文档
+
+- [安装与配置](docs/02-install.md)
+- [开发指南](docs/03-development.md)
+- [皮肤系统实现](docs/04-skins.md)
+- [MSLX API 说明](docs/05-api.md)
+
+---
+
+## 目录结构
+
+```
+.
+├── config/                  微应用清单与组件声明
+│   ├── app.config.js        ID / 版本 / 权限 / 网络白名单
+│   └── components.config.js 页面与卡片的尺寸声明
+├── src/
+│   ├── api/mslx.js          MSLX 接口封装、配置读写、状态色
+│   ├── components/
+│   │   ├── widget.js        卡片（7 种尺寸）
+│   │   ├── mainPage.js      主页面（实例列表）
+│   │   ├── playersPage.js   玩家管理
+│   │   └── widgetConfig.js  配置页
+│   ├── styles/
+│   │   ├── mcSkin.js        我的世界皮肤
+│   │   ├── neuSkin.js       拟态皮肤
+│   │   ├── glassSkin.js     液态玻璃皮肤
+│   │   ├── textures.js      运行时生成的像素纹理
+│   │   └── fonts.js         字体注入与切换
+│   └── utils/skinBus.js     皮肤变更广播
+├── tools/                   开发辅助脚本（纹理生成、配色校验）
+├── build/                   构建与打包脚本
+└── public/fonts/            字体（需自行准备，见文档）
+```
+
+---
+
+## 开发
+
+```bash
+npm run dev     # 开发预览
+npm run build   # 构建
+npm run pack    # 构建 + 打包 zip
+npm run lint    # 代码检查
+```
+
+开发调试、SDK 用法、常见问题见 [开发指南](docs/03-development.md)。
+
+### 辅助脚本
+
+`tools/` 下的 Python 脚本用于生成资源与校验质量，需要 Pillow：
+
+```bash
+# 生成像素纹理（石头 / 草方块），输出 src/styles/textures.js
+python tools/gen-textures.py
+
+# 子集化字体，只保留用到的字符
+python tools/subset-fonts.py
+
+# 校验皮肤配色的 WCAG 对比度
+python tools/check-contrast.py
+python tools/check-status-colors.py
+```
+
+配色校验脚本会输出每个前景 / 背景组合的对比度，低于 4.5 的会被标记。本项目的所有文字配色都通过了这项检查。
+
+---
+
+## 已知限制
+
+- **无实时日志**：MSLX 的日志走 SignalR，微应用无法连接，所以看不到控制台输出
+- **轮询而非推送**：MSLX 的防爆破机制较严，刷新间隔不宜低于 30 秒
+- **地址长度**：极长的域名会自动缩小字号显示，缩到 6px 后不再缩小
+
+---
+
+## 致谢
+
+- [Sun-Panel](https://github.com/naiba/sun-panel)
+- [MSLX](https://github.com/MSLTeam/MSLX)
+- [Lit](https://lit.dev/)
+- 配色与纹理参考 Minecraft 官方材质，仅用于风格致敬
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+字体文件版权归各自所有者，详见 LICENSE 中的第三方资源说明。

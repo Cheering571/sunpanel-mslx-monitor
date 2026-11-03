@@ -1,0 +1,37 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+.build/
+
+# 打包产物（.zip 通过 Release 分发，不进仓库）
+packages/
+*.zip
+
+# 编辑器
+.vscode/
+.history/
+.DS_Store
+*.swp
+
+# 模板同步信息
+.template-sync-info.json
+
+# ------------------------------------------------------------------
+# 字体文件不纳入版本控制
+#
+# public/fonts/*.ttf 是第三方字体，版权各自归属：
+#   - Mojangles 属于 Mojang（Minecraft 官方字体）
+#   - Unifont 属于 GNU 项目（GPL v2 + font embedding exception）
+# 为避免再分发争议，仓库只保留子集化脚本，
+# 自行放入 public/fonts/ 后运行 tools/subset-fonts.py 生成。
+# ------------------------------------------------------------------
+public/fonts/*.ttf
+
+# Python 工具产生的缓存
+tools/__pycache__/
+*.pyc
+
+# 临时日志
+*.log

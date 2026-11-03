@@ -1,0 +1,77 @@
+{
+  "appJsonVersion": "1.1",
+  "author": "cheering",
+  "version": "1.10.1",
+  "entry": "main.js",
+  "icon": "icon.png",
+  "debug": false,
+  "appInfo": {
+    "appName": "$t:APP_NAME",
+    "description": "$t:APP_DESCRIPTION",
+    "networkDescription": "$t:NETWORK_DESCRIPTION"
+  },
+  "locales": {
+    "zh-CN": "zh-CN.json",
+    "en-US": "en-US.json"
+  },
+  "defaultLocale": "zh-CN",
+  "permissions": [
+    "network",
+    "dataNode"
+  ],
+  "networkDomains": [
+    "192.168.1.100",
+    "192.168.1.100:1027"
+  ],
+  "dataNodes": {
+    "mslx": {
+      "scope": "user",
+      "isPublic": false
+    }
+  },
+  "microAppId": "cheering-mslx-monitor",
+  "apiVersion": "1.0.19",
+  "components": {
+    "pages": {
+      "mslx-config": {
+        "background": "linear-gradient(135deg, #e8f4ff 0%, #f0f0f5 100%)",
+        "backgroundDark": "#1f1f1f",
+        "headerTextColor": "#1890ff",
+        "headerTextColorDark": "#4da3ff"
+      },
+      "mslx-main": {
+        "type": "main",
+        "background": "#f5f6f8",
+        "backgroundDark": "#181818",
+        "headerTextColor": "black",
+        "headerTextColorDark": "white",
+        "showFullscreenBtn": true
+      },
+      "mslx-players": {
+        "background": "#f5f6f8",
+        "backgroundDark": "#181818",
+        "headerTextColor": "black",
+        "headerTextColorDark": "white",
+        "showFullscreenBtn": true
+      }
+    },
+    "widgets": {
+      "mslx-widget": {
+        "configComponentName": "mslx-config",
+        "size": [
+          "1x1",
+          "1x2",
+          "2x1",
+          "2x2",
+          "2x4",
+          "4x4",
+          "1xfull"
+        ],
+        "background": "",
+        "widgetName": "$t:WIDGET_MSLX_NAME",
+        "widgetDescription": "$t:WIDGET_MSLX_DESCRIPTION",
+        "sort": 10
+      }
+    }
+  }
+}
