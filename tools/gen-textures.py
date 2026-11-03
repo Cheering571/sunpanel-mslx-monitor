@@ -46,6 +46,7 @@ def to_data_uri(img, fmt='PNG'):
 
 
 def gen_stone(w=16, h=16):
+    """16×16，卡片上以 background-size:16px 平铺，做到 1:1 不缩放"""
     img = Image.new('RGBA', (w, h))
     px = img.load()
     for y in range(h):
@@ -55,22 +56,40 @@ def gen_stone(w=16, h=16):
     return img
 
 
-def gen_grass(w=32, h=64):
-    """侧面：顶部草带（边缘参差 3~6 行）+ 下方泥土"""
+def gen_grass(w=64, h=128):
+    """
+    64×128 而非 32×64。
+
+    草方块在卡片上是拉伸显示（background-size:100% 100%），
+    220px 的卡片上 32×64 会被放大 6.9×/3.4×，像素块被拉成矩形，看起来发糊。
+    提到 96×192 后放大倍数是 2.3×/1.15×，颗粒保持锐利。
+
+    草带深度按比例放大到 8~16 行，边缘依旧逐列随机，避免出现直边。
+    """
     img = Image.new('RGBA', (w, h))
     px = img.load()
 
+    # 每列草皮深度（8~16 行），参差不齐
     depth = []
     for _ in range(w):
         r = random.random()
-        depth.append(3 if r < 0.25 else 4 if r < 0.6 else 5 if r < 0.85 else 6)
+        if r < 0.25:
+            depth.append(8)
+        elif r < 0.6:
+            depth.append(11)
+        elif r < 0.85:
+            depth.append(13)
+        else:
+            depth.append(16)
 
     for x in range(w):
         for y in range(h):
             if y < depth[x]:
                 if y == 0:
+                    # 最上一行提亮，模拟受光
                     c = random.choice(GRASS_TOP[:2] + ['#5a8a48'])
-                elif y >= depth[x] - 1:
+                elif y >= depth[x] - 2:
+                    # 草与泥土交界压暗
                     c = random.choice(GRASS_DARK)
                 else:
                     c = random.choice(GRASS_TOP)
