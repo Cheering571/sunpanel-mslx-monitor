@@ -2,6 +2,13 @@
 
 本文记录五套皮肤的架构、踩过的坑，以及新增皮肤时的做法。
 
+<p align="center">
+  <img src="images/skin-mc-stone.png" width="170" alt="石头" />
+  <img src="images/skin-mc-grass.png" width="170" alt="草方块" />
+  <img src="images/skin-neu.png" width="170" alt="拟态" />
+  <img src="images/skin-glass.png" width="170" alt="液态玻璃" />
+</p>
+
 ---
 
 ## 架构

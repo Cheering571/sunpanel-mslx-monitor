@@ -4,6 +4,8 @@
 
 不用切页面、不用记 IP，卡片上就能看到在线人数、运行时长、内存占用，点一下就启停。
 
+![总览](docs/images/overview.webp)
+
 <p align="center">
   <i>7 种卡片尺寸 · 5 套主题皮肤 · 每张卡片可独立绑定不同服务器</i>
 </p>
@@ -56,6 +58,16 @@
 ## 主题皮肤
 
 五套皮肤，全部跟随 Sun-Panel 的深色 / 浅色模式，且内页（主页面、玩家页、配置页）一并换肤。
+
+<p align="center">
+  <img src="docs/images/skin-mc-stone.png" width="180" alt="我的世界 · 石头" />
+  <img src="docs/images/skin-mc-grass.png" width="180" alt="我的世界 · 草方块" />
+  <img src="docs/images/skin-neu.png" width="180" alt="拟态" />
+  <img src="docs/images/skin-glass.png" width="180" alt="液态玻璃" />
+</p>
+<p align="center">
+  <i>石头 · 草方块 · 拟态 · 液态玻璃</i>
+</p>
 
 | 皮肤 | 风格 |
 |---|---|
