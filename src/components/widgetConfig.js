@@ -18,6 +18,26 @@ import { neuSkin } from '../styles/neuSkin.js';
 import { glassSkin } from '../styles/glassSkin.js';
 import { ensureFontFaces, fontClass, FONTS } from '../styles/fonts.js';
 import { emitSkinChange } from '../utils/skinBus.js';
+/**
+ * 把原始报错翻译成可操作的建议。
+ * 用户看不到源码，看到"No permission to access"只会一脸懵。
+ */
+function explainError(msg) {
+  const m = String(msg || '');
+  if (/No permission to access/i.test(m)) {
+    return '当前安装包的网络白名单不含这个地址：离线安装的包需要重新打包（构建时用 MSLX_HOSTS 指定），或在商店安装的版本会自动适配。';
+  }
+  if (/封禁|banned|forbidden/i.test(m)) {
+    return 'MSLX 已临时封禁来源 IP（约 60 分钟）。注意请求是从 Sun-Panel 所在机器发出的，不是你浏览器所在机器。';
+  }
+  if (/ECONNREFUSED|Failed to fetch|NetworkError|timeout/i.test(m)) {
+    return '连不上 MSLX。请确认地址和端口正确、MSLX 正在运行、且 Sun-Panel 所在机器能访问它。';
+  }
+  if (/401|Unauthorized|token/i.test(m)) {
+    return '账号或密码不正确，也可能是令牌已过期，重新点一次「测试连接」即可。';
+  }
+  return '';
+}
 
 export class WidgetConfig extends SunPanelPageElement {
   // 皮肤样式走 Shadow DOM，与 render 里的 <style> 共存（后者优先级更高）
@@ -34,6 +54,7 @@ export class WidgetConfig extends SunPanelPageElement {
 
     connState: { type: String, state: true },
     connMsg: { type: String, state: true },
+    connHint: { type: String, state: true },
     instances: { type: Array, state: true },
     instanceId: { type: String, state: true },
     tokenReady: { type: Boolean, state: true },
@@ -50,6 +71,7 @@ export class WidgetConfig extends SunPanelPageElement {
     this.password = '';
     this.connState = 'idle';
     this.connMsg = '';
+    this.connHint = '';
     this.instances = [];
     this.instanceId = '';
     this.tokenReady = false;
@@ -142,12 +164,14 @@ export class WidgetConfig extends SunPanelPageElement {
       this.tokenReady = true;
       this.connState = 'ok';
       this.connMsg = '连接成功';
+      this.connHint = '';
 
       await this._loadInstances();
     } catch (e) {
       this.connState = 'fail';
       const msg = e?.message || '连接失败';
       this.connMsg = msg.includes('封禁') ? msg : msg + '（请勿连续重试，MSLX 有防爆破）';
+      this.connHint = explainError(msg);
       this.tokenReady = false;
     } finally {
       this.requestUpdate();
@@ -164,6 +188,7 @@ export class WidgetConfig extends SunPanelPageElement {
       }
     } catch (e) {
       this.connMsg = '已连接，但读取实例列表失败：' + (e?.message || '');
+      this.connHint = explainError(e?.message || '');
     }
     this.requestUpdate();
   }
@@ -220,6 +245,9 @@ export class WidgetConfig extends SunPanelPageElement {
       <div class="conn-status" style="color:${s.color}">
         <span>${s.icon}</span><span>${this.connMsg}</span>
       </div>
+      ${this.connHint
+        ? html`<div class="conn-hint"><span>ⓘ</span><span>${this.connHint}</span></div>`
+        : ''}
     `;
   }
 
@@ -330,6 +358,25 @@ export class WidgetConfig extends SunPanelPageElement {
         }
         .btn-secondary:hover { border-color: #1890ff; color: #1890ff; }
         .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .conn-hint {
+          display: flex;
+          gap: 6px;
+          align-items: flex-start;
+          margin-top: 6px;
+          padding: 8px 10px;
+          font-size: 12px;
+          line-height: 1.5;
+          border-radius: 6px;
+          background: rgba(128, 128, 128, 0.12);
+          color: var(--mc-panel-text, #555);
+        }
+        .conn-hint span:last-child { flex: 1; }
+        .hint code {
+          padding: 1px 4px;
+          border-radius: 3px;
+          background: rgba(128, 128, 128, 0.16);
+          font-size: 11px;
+        }
         .conn-status {
           display: flex;
           align-items: center;
@@ -386,12 +433,13 @@ export class WidgetConfig extends SunPanelPageElement {
                 <input
                   class="styled-input"
                   type="text"
-                  placeholder="http://192.168.1.100:1027"
+                  placeholder="例如 http://主机名:1027"
                   .value="${this.baseUrl}"
                   @input="${(e) => (this.baseUrl = e.target.value)}"
                 />
                 <div class="hint">
-                  需在微应用 networkDomains 白名单内（含端口）
+                  填 MSLX 面板的访问地址，带端口。省略协议时按 http:// 处理。<br />
+                  例：<code>mslx.local:1027</code>、<code>http://你的地址:1027</code>
                 </div>
               </div>
 

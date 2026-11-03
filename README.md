@@ -87,28 +87,44 @@
 
 ## 快速开始
 
-### 方式一：直接用打包好的 zip
+### 方式一：从微应用商店安装（推荐）
 
-1. 从 Releases 下载最新的 `cheering-mslx-monitor-x.y.z.zip`
-2. 打开 Sun-Panel → 设置 → 微应用 → 上传离线包
-3. 在导航页添加「MSLX 监控」卡片
-4. 点卡片右上角 ⚙ 填写 MSLX 地址和账号密码
+1. 打开 Sun-Panel → 设置 → **微应用** → 进入**微应用商店**
+2. 搜索「MSLX 监控」→ 点击安装
+3. 回到导航页，右键 → 添加小部件 → 选「MSLX 服务器监控」→ 选尺寸
+4. 点卡片右上角 ⚙，填写你的 MSLX 地址、账号、密码
 5. 保存
 
-> 安装或升级后如果样式没变，**请关闭标签页重新打开**，按 F5 不够 —— 微应用的 `main.js` 会被浏览器缓存。
+### 方式二：开发者模式离线上传
 
-### 方式二：自己构建
+适用于自己改代码，或者商店还没有你要的版本。
+
+1. Sun-Panel → 设置 → **开启开发者模式**
+2. 微应用 → **上传离线包** → 选择 zip
+   - 已完成版本：从 [Releases](../../releases) 下载 `cheering-mslx-monitor-x.y.z.zip`
+   - 自己构建：`npm run pack`，产物在 `packages/` 目录
+3. 回到导航页添加卡片并配置
+
+> **安装或升级后如果样式没变，请关闭标签页重新打开** —— 按 F5 不够，微应用的 `main.js` 会被浏览器缓存。
+
+### 关于网络白名单
+
+Sun-Panel 要求微应用在打包时声明可访问的主机（`networkDomains`），平台**不提供运行期修改接口**。
+
+本项目默认声明为 `'*'`，这样商店分发的包能适配任意用户的 MSLX 地址 —— 地址由你在配置页填写，不是写死在代码里的。
+
+如果你偏好收紧权限，可以在构建时指定：
 
 ```bash
-git clone https://github.com/<your-name>/sunpanel-mslx-monitor.git
-cd sunpanel-mslx-monitor
-npm install
+# Windows
+set MSLX_HOSTS=192.168.1.100,192.168.1.100:1027
 npm run pack
+
+# macOS / Linux
+MSLX_HOSTS="192.168.1.100,192.168.1.100:1027" npm run pack
 ```
 
-产物在 `packages/cheering-mslx-monitor-<version>.zip`。
-
-详细步骤见 [安装文档](docs/02-install.md)。
+注意 IP 和 `IP:端口` **两种写法都要列** —— 平台精确匹配 URL 里的 host，而 host 带端口。
 
 ---
 

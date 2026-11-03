@@ -3,6 +3,26 @@
  * 应用基础配置
  */
 
+/**
+ * 解析网络白名单。
+ *
+ * Sun-Panel 的白名单在打包时写入 app.json，平台不提供运行期修改接口，
+ * 所以「用户自己填 MSLX 地址」这件事只能靠两种方式落地：
+ *
+ *   1. 构建时用环境变量 MSLX_HOSTS 覆盖（自建 / 自用推荐）
+ *   2. 默认放开为 '*'（商店分发必须如此，否则无法适配未知地址）
+ */
+function resolveNetworkDomains() {
+  const raw = typeof process !== 'undefined' ? process.env?.MSLX_HOSTS : '';
+  if (raw && String(raw).trim()) {
+    return String(raw)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return ['*'];
+}
+
 export default {
   // =======================
   // 应用基础信息
@@ -14,7 +34,7 @@ export default {
   // 应用唯一标识（作者标识-应用标识）
   microAppId: 'cheering-mslx-monitor',
   // 应用版本
-  version: '1.10.1',
+  version: '1.10.2',
   // 入口文件
   entry: 'main.js',
   // 图标
@@ -45,15 +65,23 @@ export default {
 
   // =======================
   // 网络域名白名单
-  // 微应用只能访问这里列出的主机。
   //
-  // 重要：Sun-Panel 的白名单精确匹配 URL 里的 host，而 host 是带端口的。
-  // 只写 IP 匹配不上 IP:端口，必须把带端口的写法也列进去，否则会报：
-  // "No permission to access: http://192.168.1.100:1027/api/ping"
+  // 这是打包期的静态声明，平台在运行时不提供修改接口（安全边界），
+  // 所以这里按「一种默认 + 两种覆盖」处理：
   //
-  // 若 MSLX 换地址或端口，这里要同步修改后重新打包。
+  //   1. 默认放开：'*'
+  //      微应用商店分发时分发者无法预知使用者的 MSLX 地址，
+  //      地址由用户在配置页填写，白名单必须能覆盖任意主机。
+  //
+  //   2. 构建时指定（推荐自建用户）：
+  //      set MSLX_HOSTS=192.168.1.100,192.168.1.100:1027
+  //      npm run pack
+  //
+  //   3. 注意：Sun-Panel 精确匹配 URL 里的 host，而 host 带端口。
+  //      只写 IP 匹配不上 IP:端口，两种写法都要列，否则会报
+  //      "No permission to access: http://<host>:<port>/api/ping"
   // =======================
-  networkDomains: ['192.168.1.100', '192.168.1.100:1027'],
+  networkDomains: resolveNetworkDomains(),
 
   // =======================
   // 数据节点配置
