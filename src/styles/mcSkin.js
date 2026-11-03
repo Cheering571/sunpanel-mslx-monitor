@@ -130,7 +130,8 @@ const base = css`
 
     background-color: #6a6a6a;
     background-repeat: repeat;
-    background-size: 16px 16px;
+    /* 纹理 64×64，按 32px 平铺：重复次数少，看不出网格 */
+    background-size: 32px 32px;
   }
 
   /* ================= 草方块主题 ================= */
